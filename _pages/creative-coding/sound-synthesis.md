@@ -49,6 +49,8 @@ DIY Monosynth from oscillators
   <img src="{{ '/assets/images/creative-coding/sound-synthesis-05.jpg' | relative_url }}"/>
 </div>
 
+
+
 {% include p5-editor.html id="GjbUx3543" %}
 
 ## Sequencer

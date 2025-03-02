@@ -15,7 +15,7 @@
     {% assign p = _p | where_exp:"p", "p.url contains t" | first %}
     {% assign page_words = p.content | markdownify | strip_html | strip_newlines | number_of_words %}
 
-    {% if page_words > 100 %}
+    {% if page_words > 50 %}
       <li><a href="{{ p.url | relative_url }}  ">{{ p.title }}</a></li>
     {% else %}
       <li><a>{{ p.title }}</a></li>
