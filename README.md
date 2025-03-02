@@ -1,3 +1,3 @@
 # p5-sound tutorial
 
-from @IDMp5
+adapted from @IDMp5
