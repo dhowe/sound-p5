@@ -1,19 +1,17 @@
 ---
 title: Sound Processing
 ---
-## NOTE:
-To use the sound library, we have to include the [p5.sound library](https://p5js.org/reference/#/libraries/p5.sound) in our project's `index.html` file after the p5.js file, like this:
+
+To use the sound library, we have to include the [p5.sound library](https://p5js.org/reference/p5.sound/) in our project's `index.html` file after the p5.js file, like this:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/addons/p5.sound.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/addons/p5.sound.js"></script>
 ```
 
 ## Inputs & Outputs
 
-We've already looked at how to use the [p5.sound](https://p5js.org/reference/#/libraries/p5.sound) library to [play pre-recorded sounds](../sound-files/) from files, now, let's look at how to use other parts of the library to manipulate recorded or live audio.
-
-The p5.sound library, along with many other creative coding audio processing toolkits, was designed to somewhat mimic a physical audio processing setup. Objects have input and output ports that receive/send the same kind of information (digital audio samples); each module does some kind of processing or manipulation on its inputs before sending them to its outputs; and modules can easily be chained together to create more complex sound effects.
+The p5.sound library, along with other creative coding audio processing toolkits, was designed to somewhat mimic a physical audio processing setup. Objects have input and output ports that receive/send the same kind of information (digital audio samples); each module does some kind of processing or manipulation on its inputs before sending them to its outputs; and modules can be chained together to create more complex sound effects.
 
 There are special objects that allow us to grab live audio from our computer's input ports (microphone, line-in), and other objects that allow us to send our processed audio to our computer's outputs (speakers, line-out).
 
@@ -33,23 +31,27 @@ Let's start by looking at one of the simpler modules.
 
 ## Amplitude
 
-[Amplitude](https://p5js.org/reference/#/p5.Amplitude). is one of the "_display_" modules that don't output audio, but instead can be used to show information about our signal.
+[Amplitude](https://p5js.org/reference/p5.sound/p5.Amplitude). is one of the "_display_" modules that don't output audio, but instead can be used to show information about our signal.
 
-In this case, the Amplitude module will give us an audio signal's amplitude (how loud it is), as a number between $$0$$ and $$1$$:
+In this case, the Amplitude module will give us an audio signal's amplitude (how loud it is), as a number between $$0$$ and $$1$$.
+
+Amplitude is a bit similar to the getPeaks() function we used earlier, but now we are directly getting the current amplitude rather than all the values for a sample.
 
 <div class="scaled-images left">
   <img src="{{ '/assets/images/creative-coding/sound-processing-02.jpg' | relative_url }}"/>
 </div>
 
-By default, any [`p5.SoundFile`](https://p5js.org/reference/#/p5.SoundFile) object we create will send its output to the [`p5.soundOut`](https://p5js.org/reference/#/p5/soundOut) module/object, which is our final output: the signal that goes to our speaker.
+By default, any [`p5.SoundFile`](https://p5js.org/reference/p5.sound/p5.SoundFile/) object we create will send its output to the [`p5.soundOut`](https://p5js.org/reference/p5/soundOut) module/object, which is our final output: the signal that goes to our speaker.
 
-And, also by default, the Amplitude module gets its input from this same [`p5.soundOut`](https://p5js.org/reference/#/p5/soundOut) object.
+And, also by default, the Amplitude module gets its input from this same [`p5.soundOut`](https://p5js.org/reference/p5/soundOut) object.
 
 So, technically, instantiating these two objects like this, would be enough to have them connected properly:
 
 ```js
-mSound = loadSound("./sound-file.mp3");
-mAmp = new p5.Amplitude();
+
+  mSound = loadSound("./sound-file.mp3");
+  mAmp = new p5.Amplitude();
+
 ```
 
 But, it's not a bad idea to practice how to make these connections ourselves. This will avoid unexpected behavior and unnecessary debugging once our audio processing pipelines start getting more complex.
@@ -57,9 +59,11 @@ But, it's not a bad idea to practice how to make these connections ourselves. Th
 We can use the following code to manually re-route the signal from our `p5.SoundFile` object to both the `p5.soundOut` object and a `p5.Amplitude` module:
 
 ```js
-mSound.disconnect();
-mSound.connect(p5.soundOut);
-mSound.connect(mAmp);
+
+  mSound.disconnect();
+  mSound.connect(p5.soundOut);
+  mSound.connect(mAmp);
+
 ```
 
 These are the exact connections shown in the diagram above.
@@ -76,7 +80,7 @@ Now that we can visualize our sound, let's add an actual processing module to ma
   <img src="{{ '/assets/images/creative-coding/sound-processing-03.jpg' | relative_url }}"/>
 </div>
 
-The [`p5.Filter`](https://p5js.org/reference/#/p5.Filter) module allows us to filter our audio signals based on frequencies.
+The [`p5.Filter`](https://p5js.org/reference/p5.sound/p5.Filter) module allows us to filter our audio signals based on frequencies.
 
 Some common types of filter that we can implement with this module are: `lowpass`, `highpass`, `bandpass` and `notch`.
 
@@ -110,16 +114,18 @@ With this in mind, we can instantiate a filter and implement the following syste
 With something like this:
 
 ```js
-mSound = loadSound("./sound-file.mp3");
-mFilter = new p5.Filter("bandpass");
-mAmp = new p5.Amplitude();
 
-mSound.disconnect();
-mFilter.disconnect();
+  mSound = loadSound("./sound-file.mp3");
+  mFilter = new p5.Filter("bandpass");
+  mAmp = new p5.Amplitude();
 
-mSound.connect(mFilter);
-mFilter.connect(p5.soundOut);
-mFilter.connect(mAmp);
+  mSound.disconnect();
+  mFilter.disconnect();
+
+  mSound.connect(mFilter);
+  mFilter.connect(p5.soundOut);
+  mFilter.connect(mAmp);
+
 ```
 
 And use `mouseX` to pick the filter's center frequency $$f$$:
@@ -130,7 +136,7 @@ And use `mouseX` to pick the filter's center frequency $$f$$:
 
 We can definitely hear the differences in the sound as we move the mouse around and change the filter's cutoff frequency, but let's look at a module that will let us visualize the filter's effect as well.
 
-The [`p5.FFT`](https://p5js.org/reference/#/p5.FFT) class implements the Fast Fourier Transform algorithm, which can be used to separate our audio signal into individual frequency components.
+The [`p5.FFT`](https://p5js.org/reference/p5.sound/p5.FFT) class implements the Fast Fourier Transform algorithm, which can be used to separate our audio signal into individual frequency components.
 
 We can replace the `Amplitude` module in the last example with the `FFT` module:
 
@@ -138,13 +144,13 @@ We can replace the `Amplitude` module in the last example with the `FFT` module:
   <img src="{{ '/assets/images/creative-coding/sound-processing-08.jpg' | relative_url }}"/>
 </div>
 
-And now, when we call [`FFT.analyze()`](https://p5js.org/reference/#/p5.FFT/analyze), this module calculates an array of $$1024$$ values, where each value corresponds to how much of a particular audible frequency was present in the original audio signal.
+And now, when we call [`FFT.analyze()`](https://p5js.org/reference/p5.FFT/analyze), this module calculates an array of $$1024$$ values, where each value corresponds to how much of a particular audible frequency was present in the original audio signal.
 
 So, the first value of the array corresponds to frequencies between $$0$$ and $$20$$ Hz, the second value is for frequencies between $$20$$ and $$40$$ Hz, and so on, all the way to the 1024th value that corresponds to frequencies greater than $$22,000$$ Hz or $$22$$ kHz.
 
 If the value in a particular position is $$0$$, that means the original audio signal had no sound in that frequency. On the other hand, if it's $$255$$, it means that the original signal had a very strong sound with that frequency.
 
-The `p5.FFT` object also has a [`getEnergy()`](https://p5js.org/reference/#/p5.FFT/getEnergy) function that returns the amount of a specific frequency or frequency range present in the audio signal. It can also be called with one of five pre-defined range strings, to get the amount of energy in the `bass`, `lowMid`, `mid`, `highMid` and  `treble` frequency ranges.
+The `p5.FFT` object also has a [`getEnergy()`](https://p5js.org/reference/p5.FFT/getEnergy) function that returns the amount of a specific frequency or frequency range present in the audio signal. It can also be called with one of five pre-defined range strings, to get the amount of energy in the `bass`, `lowMid`, `mid`, `highMid` and  `treble` frequency ranges.
 
 Knowing this, we can use the `p5.FFT` object and the `FFT.analyze()` and `getEnergy()` functions to visualize the effects of the filter from the previous example:
 
@@ -156,7 +162,7 @@ Let's experiment with another effect module/object
 
 ## Delay
 
-The [`p5.Delay`](https://p5js.org/reference/#/p5.Delay) module adds a kind of echo effect to any sound by replaying the audio signal again after a couple of milliseconds and then replaying again delayed by a couple more milliseconds, and so on and so on... to create a trail of sound, where each delayed copy is also attenuated (lower volume) by some amount.
+The [`p5.Delay`](https://p5js.org/reference/p5.sound/p5.Delay) module adds a kind of echo effect to any sound by replaying the audio signal again after a couple of milliseconds and then replaying again delayed by a couple more milliseconds, and so on and so on... to create a trail of sound, where each delayed copy is also attenuated (lower volume) by some amount.
 
 We can just replace the `p5.Filter` module in the examples above with a `p5.Delay` object like this:
 
@@ -164,11 +170,13 @@ We can just replace the `p5.Filter` module in the examples above with a `p5.Dela
   <img src="{{ '/assets/images/creative-coding/sound-processing-09.jpg' | relative_url }}"/>
 </div>
 
-And initialize the object with a proper [`delayTime()`](https://p5js.org/reference/#/p5.Delay/delayTime):
+And initialize the object with a proper [`delayTime()`](https://p5js.org/reference/p5.Delay/delayTime):
 
 ```js
-mDelay = new p5.Delay();
-mDelay.delayTime(0.15);
+
+  mDelay = new p5.Delay();
+  mDelay.delayTime(0.15);
+
 ```
 
 But, no matter how we adjust this parameter, the resulting signal just won't sound like a _natural_ echo. Try it :
@@ -186,12 +194,14 @@ To simulate this, we have to wire up our sound processing modules like this:
 Where the output gets a mix of the original sound plus the delayed sound:
 
 ```js
-mSound.amp(0.7);
-mDelay.amp(0.3);
 
-mSound.connect(mDelay);
-mSound.connect(p5.soundOut);
-mDelay.connect(p5.soundOut);
+  mSound.amp(0.7);
+  mDelay.amp(0.3);
+
+  mSound.connect(mDelay);
+  mSound.connect(p5.soundOut);
+  mDelay.connect(p5.soundOut);
+
 ```
 
 {% include p5-editor.html id="OcNSvyt6B" %}
@@ -200,7 +210,7 @@ Now we can play with the parameters to adjust the delay and we'll have a little 
 
 ## Reverb
 
-Another module that is very similar to the [`p5.Delay`](https://p5js.org/reference/#/p5.Delay), gets connected the same way, and is used in a similar manner, is the [`p5.Reverb`](https://p5js.org/reference/#/p5.Reverb) effect.
+Another module that is very similar to the [`p5.Delay`](https://p5js.org/reference/p5.sound/p5.Delay), gets connected the same way, and is used in a similar manner, is the [`p5.Reverb`](https://p5js.org/reference/p5.sound/p5.Reverb) effect.
 
 Reverb also adds echo to a sound, but instead of adding one delayed version of the signal, as if it was coming from the same location as the original source, reverb is like adding a bunch of delayed versions of the original source, but all coming from different locations. This has the overall effect of making the sound feel like it is occurring in a physical space with particular audio characteristics.
 
@@ -232,7 +242,7 @@ and adjust some of the parameters, we can get it to make the original signals so
 
 ## Pushing Delay
 
-Now that we know how the [`p5.Delay`](https://p5js.org/reference/#/p5.Delay) and [`p5.Reverb`](https://p5js.org/reference/#/p5.Reverb) modules work, maybe we can start using them in non-expected ways.
+Now that we know how the [`p5.Delay`](https://p5js.org/reference/p5.sound/p5.Delay) and [`p5.Reverb`](https://p5js.org/reference/p5.sound/p5.Reverb) modules work, maybe we can start using them in non-expected ways.
 
 What happens if we chain a bunch of delay modules in a row? Or mix delays and reverbs?
 
@@ -245,21 +255,23 @@ Let's start by building the following processing pipeline:
 We'll use a for loop to create the modules and push them onto an array, and then we can wire up the edge cases:
 
 ```js
-for (let i = 0; i < NUM_DELAYS; i++) {
-  let mDelay = new p5.Delay();
-  mDelay.delayTime(DELAY_TIME);
 
-  // connect output of previous delay to input
-  mDelays[i - 1].connect(mDelay);
+  for (let i = 0; i < NUM_DELAYS; i++) {
+    let mDelay = new p5.Delay();
+    mDelay.delayTime(DELAY_TIME);
 
-  mDelays.push(mDelay);
-}
+    // connect output of previous delay to input
+    mDelays[i - 1].connect(mDelay);
 
-// connect audio file module to first delay
-mSound.connect(mDelays[0]);
+    mDelays.push(mDelay);
+  }
 
-// connect last delay to output
-mDelays[mDelays.length - 1].connect(p5.soundOut);
+  // connect audio file module to first delay
+  mSound.connect(mDelays[0]);
+
+  // connect last delay to output
+  mDelays[mDelays.length - 1].connect(p5.soundOut);
+
 ```
 
 And the full sketch, with some adjustable parameters:
@@ -274,7 +286,7 @@ We can easily change the above sketch to use a microphone instead of a pre-recor
   <img src="{{ '/assets/images/creative-coding/sound-processing-14.jpg' | relative_url }}"/>
 </div>
 
-We just add a [`p5.AudioIn`](https://p5js.org/reference/#/p5.AudioIn) object to get the sound from the microphone and a boolean variable `isMicOn` to toggle the microphone on and off:
+We just add a [`p5.AudioIn`](https://p5js.org/reference/p5.sound/p5.AudioIn) object to get the sound from the microphone and a boolean variable `isMicOn` to toggle the microphone on and off:
 
 ### NOTE: sketches that use the microphone won't work here. They have to be opened in a new window directly from their [LINK](https://editor.p5js.org/thiagohersan/sketches/94vJFO1dT_).
 
@@ -295,9 +307,11 @@ We will work towards this pipeline, one effect at a time:
 First, the low-frequency path:
 
 ```js
-mSound.connect(mFilterLow);
-mFilterLow.connect(mDelay);
-mDelay.connect(p5.soundOut);
+
+  mSound.connect(mFilterLow);
+  mFilterLow.connect(mDelay);
+  mDelay.connect(p5.soundOut);
+
 ```
 
 With a toggle, to check the effect:
@@ -307,13 +321,14 @@ With a toggle, to check the effect:
 Now, the high-frequency path:
 
 ```js
-mSound.connect(mFilterHigh);
-mFilterHigh.connect(mReverb);
-mReverb.connect(p5.soundOut);
+
+  mSound.connect(mFilterHigh);
+  mFilterHigh.connect(mReverb);
+  mReverb.connect(p5.soundOut);
+
 ```
 
-With a toggle:
 {% include p5-editor.html id="FDLTm6orf" %}
 
-And, putting it all together, with a toggle:
+And, putting it all together:
 {% include p5-editor.html id="GkVqKhU2t" %}
