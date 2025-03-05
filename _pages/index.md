@@ -11,11 +11,11 @@ permalink: /
 {% endcapture %}
 {% include home-section.html section="creative-coding" title=title topics=topics %}
 
-{% capture topics %}
+<!-- {% capture topics %}
   sound-files
   sound-processing
   sound-synthesis
-{% endcapture %}
+{% endcapture %} -->
 <!-- Projects -->
 <!-- {% assign title = "Examples:Putting it all together" %}
 {% capture topics %}

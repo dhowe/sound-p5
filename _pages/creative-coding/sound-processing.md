@@ -2,6 +2,9 @@
 title: Sound Processing
 ---
 
+{% assign lvl = page.url | append:'X' | split:'/' | size %}
+{% capture relative %}{% for i in (3..lvl) %}../{% endfor %}{% endcapture %}
+
 To use the sound library, we have to include the [p5.sound library](https://p5js.org/reference/p5.sound/) in our project's `index.html` file after the p5.js file, like this:
 
 ```html
@@ -18,27 +21,27 @@ There are special objects that allow us to grab live audio from our computer's i
 There are also "_display_" objects that don't output any sound signal, but are used to obtain specific information about our audio signals, which we can then use to analyze our audio visually.
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-00.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-00.jpg"/>
 </div>
 
 The outputs from these objects/modules can be routed to many inputs, and some modules can receive multiple inputs:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-01.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-01.jpg"/>
 </div>
 
 Let's start by looking at one of the simpler modules.
 
 ## Amplitude
 
-[Amplitude](https://p5js.org/reference/p5.sound/p5.Amplitude). is one of the "_display_" modules that don't output audio, but instead can be used to show information about our signal.
+[Amplitude](https://p5js.org/reference/p5.sound/p5.Amplitude) is one of the "_display_" modules that don't output audio, but instead can be used to show information about our signal.
 
 In this case, the Amplitude module will give us an audio signal's amplitude (how loud it is), as a number between $$0$$ and $$1$$.
 
-Amplitude is a bit similar to the getPeaks() function we used earlier, but now we are directly getting the current amplitude rather than all the values for a sample.
+Amplitude is a bit similar to the getPeaks() function we used earlier, but now we are directly getting the current amplitude of whatever is connected to the unit, rather than all the values for a single sample.
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-02.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-02.jpg"/>
 </div>
 
 By default, any [`p5.SoundFile`](https://p5js.org/reference/p5.sound/p5.SoundFile/) object we create will send its output to the [`p5.soundOut`](https://p5js.org/reference/p5/soundOut) module/object, which is our final output: the signal that goes to our speaker.
@@ -77,7 +80,7 @@ Our `p5.Amplitude` object can now be used at every iteration of our `draw()` fun
 Now that we can visualize our sound, let's add an actual processing module to manipulate the quality and characteristics of our audio:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-03.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-03.jpg"/>
 </div>
 
 The [`p5.Filter`](https://p5js.org/reference/p5.sound/p5.Filter) module allows us to filter our audio signals based on frequencies.
@@ -87,20 +90,20 @@ Some common types of filter that we can implement with this module are: `lowpass
 Like the name suggests, the `lowpass` filter lets low frequencies (bass) through while blocking high frequencies:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-04.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-04.jpg"/>
 </div>
 
 The `highpass` acts in the opposite manner, filtering out low-frequency components of the sound, while letting high frequencies pass to the output:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-05.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-05.jpg"/>
 </div>
 
 The `notch` filter is used to attenuate a specific range of frequencies from the audio signal, while the `bandpass` does the opposite and only lets a specific range of frequencies pass to its output:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-06.jpg' | relative_url }}"/>
-  <img src="{{ '/assets/images/creative-coding/sound-processing-07.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-06.jpg"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-07.jpg"/>
 </div>
 
 The frequency $$f$$, sometimes called the cutoff frequency, corner frequency or break frequency, is a parameter to the filter object and will determine which frequencies pass and which will be filtered out. The `bandpass` and `notch` filters also have another parameter to control their bandwidth, or how wide their cutoff or pass bands are.
@@ -108,7 +111,7 @@ The frequency $$f$$, sometimes called the cutoff frequency, corner frequency or 
 With this in mind, we can instantiate a filter and implement the following system:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-03.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-03.jpg"/>
 </div>
 
 With something like this:
@@ -141,7 +144,7 @@ The [`p5.FFT`](https://p5js.org/reference/p5.sound/p5.FFT) class implements the 
 We can replace the `Amplitude` module in the last example with the `FFT` module:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-08.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-08.jpg"/>
 </div>
 
 And now, when we call [`FFT.analyze()`](https://p5js.org/reference/p5.FFT/analyze), this module calculates an array of $$1024$$ values, where each value corresponds to how much of a particular audible frequency was present in the original audio signal.
@@ -167,7 +170,7 @@ The [`p5.Delay`](https://p5js.org/reference/p5.sound/p5.Delay) module adds a kin
 We can just replace the `p5.Filter` module in the examples above with a `p5.Delay` object like this:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-09.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-09.jpg"/>
 </div>
 
 And initialize the object with a proper [`delayTime()`](https://p5js.org/reference/p5.Delay/delayTime):
@@ -188,7 +191,7 @@ This is because all we are hearing is the "wet" sound, the sound with the delay,
 To simulate this, we have to wire up our sound processing modules like this:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-10.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-10.jpg"/>
 </div>
 
 Where the output gets a mix of the original sound plus the delayed sound:
@@ -223,7 +226,7 @@ This video explains and shows the difference between delay and reverb on vocal a
 In p5js, if we wire it up to hear just the reverb, like this:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-11.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-11.jpg"/>
 </div>
 
 the _wet_ signal will sound like this:
@@ -233,7 +236,7 @@ the _wet_ signal will sound like this:
 But, like the delay, if we wire it up like this, mixing the _wet_ and _dry_ signals:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-12.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-12.jpg"/>
 </div>
 
 and adjust some of the parameters, we can get it to make the original signals sound like it's coming from a large empty room:
@@ -249,7 +252,7 @@ What happens if we chain a bunch of delay modules in a row? Or mix delays and re
 Let's start by building the following processing pipeline:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-13.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-13.jpg"/>
 </div>
 
 We'll use a for loop to create the modules and push them onto an array, and then we can wire up the edge cases:
@@ -283,7 +286,7 @@ And the full sketch, with some adjustable parameters:
 We can easily change the above sketch to use a microphone instead of a pre-recorded file if we want to add the effect to our own voice in real time:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-14.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-14.jpg"/>
 </div>
 
 We just add a [`p5.AudioIn`](https://p5js.org/reference/p5.sound/p5.AudioIn) object to get the sound from the microphone and a boolean variable `isMicOn` to toggle the microphone on and off:
@@ -301,7 +304,7 @@ The idea is to add a noticeable delay on the lower frequencies, to artificially 
 We will work towards this pipeline, one effect at a time:
 
 <div class="scaled-images left">
-  <img src="{{ '/assets/images/creative-coding/sound-processing-15.jpg' | relative_url }}"/>
+  <img src="{{ relative }}/assets/images/creative-coding/sound-processing-15.jpg"/>
 </div>
 
 First, the low-frequency path:
